@@ -1,6 +1,6 @@
 # WeatherFinder
 
-A React and Django web-app that display weather based on the city entered by the user.
+A React web-app that display weather based on the city entered by the user.
 
 ## Features
 
@@ -20,48 +20,13 @@ A React and Django web-app that display weather based on the city entered by the
 
 ## Installation Instructions
 
-- After cloning the repository, `cd` into it and run following commands:
-
-```
-# Create a virtual environment for the backend
-virtualenv env
-
-# Activate the virtual environment
-source env/bin/activate
-
-# Install the packages
-pip install -r requirements.txt
-
-# Make build.sh executable 
-chmod +x build.sh
-
-# Install nodemon gloablly to auto-reload the server when making changes in the files
-npm install -g nodemon
-
-# cd into the frontend directory
-cd frontend
-
-# Install packages for the React app
-npm install
-
-# Use npm-watch to track the changes being made in the React app
-npm run watch
-```
-
-- Inside the `frontend/src/APIKeys` folder, specity your GooglePlaces' API key and OpenWeatherMap's API key in the respective files.
+- After `cd`ing into the frontend directory, run `npm install` to install the node_modules.
+- Inside the `APIKeys` folder, specify your GooglePlaces API key and OpenWeatherMap API key in the respective files.
     - Instructions to generate API keys:
         - [To setup API key for Google Places API](https://www.youtube.com/embed/Rpzp0yCAmq4?start=35)
         - [Generate OpenWeatherMap API key after signing up](https://home.openweathermap.org/api_keys)
+- Run `npm start` to run the app!
 
-- Now, open up a new terminal, go inside the repo and run following commands:
-
-```
-source env/bin/activate
-cd backend
-
-# To run Django dev server and watch file changes in the app
-nodemon --exec python manage.py runserver
-```
 
 
 ## Technical Details
