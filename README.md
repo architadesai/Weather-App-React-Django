@@ -66,6 +66,35 @@ nodemon --exec python manage.py runserver
 
 ## Technical Details
 
+### Code Architecture
+
+#### Overview
+
+- `frontend` directory:
+    - React app, which can be run separately on its own by running `npm start` in the `frontend` directory, after installing the node_modules.
+- `backend` directory:
+    - Main Django app, on which the whole application is running.
+- `build.sh`:
+    - For automating build scripts of React and using those static files as Django templates
+- `env`: 
+    - Virtual environment for the Django project
+- `requirements.txt`:
+    - Dependency list of the Django app
+
+#### Workflow
+
+- Inside `frontend/package.json`, npm-watch module is included as a dev dependency because it will detect changes in the React app (`frontend/src` and `frontend/public`) and `buildapp` will run `build.sh` script.
+- Every time `build.sh` script runs, it will generate static bundle files from the React app and `./manage.py collectstatic` will collect those static files and store them inside `backend/static`
+- Whitenoise:
+    - This package is used to  serve and cache static files from `frontend/build/root/` whenever needed.
+- Files stored at `frontend/build/static` will be served at `/static/` URL, settings for the same are specified in `backend/weatherfinder/settings.py`.
+- Django's `urls.py` will go to `views.py`, which will render `index.html` file of React app.
+- This `index.html` when rendered, will have links to static JS bundle files and they'll be considered as Django templates and served from there.
+- Nodemon:
+    - Keeps track of changes being made in the file and reruns the file or server based on changes in the source code.
+- `nodemon --exec python manage.py runserver` will run the development server and every time some changes happen in the Django web-app or its static files, nodemon will re-start the django dev server.
+
+
 ### APIs Used:
 
 #### [Google Places Autocomplete API](https://developers.google.com/places/web-service/autocomplete)
@@ -104,3 +133,6 @@ nodemon --exec python manage.py runserver
     - main.humidity
 - Wind speed (given in m/s) = ms*3.6 kmph
     - wind.speed
+
+
+<sub>Reference: [Hybrid app model used to integrate React app with Django](https://fractalideas.com/blog/making-react-and-django-play-well-together-hybrid-app-model/)</sub>

@@ -33,13 +33,11 @@ do
 done
 
 
-# echo "Now current directory after is $PWD"
 cd ..
-# echo "Now current directory is $PWD"
-cd backend
-# echo "Now current directory is $PWD"
 
-# Collect static files
+cd backend
+
+# Collect static files, for django, from React
 # --no-input means don't prompt user for any kind of input
 ./manage.py collectstatic --no-input
 
