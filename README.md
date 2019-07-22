@@ -1,6 +1,6 @@
 # WeatherFinder
 
-A React web-app that display weather based on the city entered by the user.
+A React and Django web-app that display weather based on the city entered by the user.
 
 ## Features
 
@@ -20,16 +20,80 @@ A React web-app that display weather based on the city entered by the user.
 
 ## Installation Instructions
 
-- After cloning the repo, go to the directory and run `npm install` to install the node_modules.
-- Inside the `APIKeys` folder, specity your GooglePlaces API key and OpenWeatherMap API key in the respective files.
+- After cloning the repository, `cd` into it and run following commands:
+
+```
+# Create a virtual environment for the backend
+virtualenv env
+
+# Activate the virtual environment
+source env/bin/activate
+
+# Install the packages
+pip install -r requirements.txt
+
+# Make build.sh executable 
+chmod +x build.sh
+
+# Install nodemon gloablly to auto-reload the server when making changes in the files
+npm install -g nodemon
+
+# cd into the frontend directory
+cd frontend
+
+# Install packages for the React app
+npm install
+
+# Use npm-watch to track the changes being made in the React app
+npm run watch
+```
+
+- Inside the `frontend/src/APIKeys` folder, specity your GooglePlaces' API key and OpenWeatherMap's API key in the respective files.
     - Instructions to generate API keys:
         - [To setup API key for Google Places API](https://www.youtube.com/embed/Rpzp0yCAmq4?start=35)
         - [Generate OpenWeatherMap API key after signing up](https://home.openweathermap.org/api_keys)
-- Run `npm start` to run the app!
 
+- Now, open up a new terminal, go inside the repo and run following commands:
+
+```
+source env/bin/activate
+cd backend
+
+# To run Django dev server and watch file changes in the app
+nodemon --exec python manage.py runserver
+```
 
 
 ## Technical Details
+
+### Code Architecture
+
+#### Overview
+
+- `frontend` directory:
+    - React app, which can be run separately on its own by running `npm start` in the `frontend` directory, after installing the node_modules.
+- `backend` directory:
+    - Main Django app, on which the whole application is running.
+- `build.sh`:
+    - For automating build scripts of React and using those static files as Django templates
+- `env`: 
+    - Virtual environment for the Django project
+- `requirements.txt`:
+    - Dependency list of the Django app
+
+#### Workflow
+
+- Inside `frontend/package.json`, npm-watch module is included as a dev dependency because it will detect changes in the React app (`frontend/src` and `frontend/public`) and `buildapp` will run `build.sh` script.
+- Every time `build.sh` script runs, it will generate static bundle files from the React app and `./manage.py collectstatic` will collect those static files and store them inside `backend/static`
+- Whitenoise:
+    - This package is used to  serve and cache static files from `frontend/build/root/` whenever needed.
+- Files stored at `frontend/build/static` will be served at `/static/` URL, settings for the same are specified in `backend/weatherfinder/settings.py`.
+- Django's `urls.py` will go to `views.py`, which will render `index.html` file of React app.
+- This `index.html` when rendered, will have links to static JS bundle files and they'll be considered as Django templates and served from there.
+- Nodemon:
+    - Keeps track of changes being made in the file and reruns the file or server based on changes in the source code.
+- `nodemon --exec python manage.py runserver` will run the development server and every time some changes happen in the Django web-app or its static files, nodemon will re-start the django dev server.
+
 
 ### APIs Used:
 
@@ -69,3 +133,6 @@ A React web-app that display weather based on the city entered by the user.
     - main.humidity
 - Wind speed (given in m/s) = ms*3.6 kmph
     - wind.speed
+
+
+<sub>Reference: [Hybrid app model used to integrate React app with Django](https://fractalideas.com/blog/making-react-and-django-play-well-together-hybrid-app-model/)</sub>

@@ -60,6 +60,7 @@ class App extends React.Component {
         const inputStyles = {
             width: "100%"
         }
+        // console.log("testing6")
         // console.log(this.inputRef)
         // console.log("weather hidden from app.js ", this.state.weatherIsHidden)
 
